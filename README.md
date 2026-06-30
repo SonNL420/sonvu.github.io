@@ -125,8 +125,10 @@ node scripts/gen-icons.js   # see commit history; uses Playwright's chromium
 
 ## Deploying
 
-It's a static site. Push to the branch GitHub Pages serves and open the Pages URL. No
-build, no dependencies, nothing to install.
+It's a static site published to GitHub Pages by `.github/workflows/deploy-pages.yml` on
+every push to the app branch — no build, no dependencies, nothing to install. Live at
+**https://pricebook.sonvu.eu/** (custom domain; the workflow writes a `CNAME` file so the
+domain sticks across deploys).
 
 ## Privacy
 
