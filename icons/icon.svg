@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="PriceBook">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#22c55e"/>
+      <stop offset="1" stop-color="#15803d"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <g transform="rotate(-15 256 256)">
+    <!-- price tag -->
+    <path d="M120 256 L182 194 L334 194 Q358 194 358 218 L358 294 Q358 318 334 318 L182 318 Z"
+          fill="#ffffff"/>
+    <!-- string hole -->
+    <circle cx="182" cy="256" r="15" fill="#15803d"/>
+    <!-- price lines -->
+    <rect x="214" y="236" width="116" height="18" rx="9" fill="#16a34a"/>
+    <rect x="214" y="272" width="80" height="16" rx="8" fill="#bbf7d0"/>
+  </g>
+</svg>
