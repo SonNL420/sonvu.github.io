@@ -1,0 +1,49 @@
+name: Deploy PriceBook to GitHub Pages
+
+# Publishes the static app to GitHub Pages whenever this branch is pushed.
+# Tries to enable Pages automatically (enablement: true) so no manual setup
+# is needed in repo Settings.
+
+on:
+  push:
+    branches: ["claude/grocery-price-tracker-om77po"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Assemble static site
+        run: |
+          mkdir _site
+          cp -r index.html styles.css app.js data.js sync.js \
+                manifest.webmanifest service-worker.js README.md icons _site/
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
