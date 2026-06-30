@@ -85,12 +85,13 @@ your phone **and** laptop, connect a free [Supabase](https://supabase.com) proje
    ```
 
 3. In **Project Settings → API**, copy the **Project URL** and the **anon public** key.
-4. In **Authentication → URL Configuration**, add the address where you open PriceBook
-   (e.g. `https://<your-username>.github.io/`) to the **Site URL** / **Redirect URLs** so
-   the sign-in link returns to the app.
+4. In **Authentication → Sign In / Providers → Email**, turn **off "Confirm email."** This
+   lets the app sign you in with just an email + password — no verification emails (which
+   avoids rate limits and mail-client link issues).
 5. In PriceBook → **Settings → Sync across devices**, paste the URL + anon key, **Save
-   connection**, then enter your email and **Email me a sign-in link**. Open the link on
-   each device.
+   connection**, then enter an **email + password** and tap **Sign in / Create account**.
+   The first time creates your account; use the **same email + password on every device**
+   to share data.
 
 After that, prices sync automatically on load and whenever you add/edit/delete (a manual
 **Sync now** button is there too). Merging is **last-write-wins** on each record's

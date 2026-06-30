@@ -375,20 +375,26 @@ function wire() {
     refreshSyncStatus();
   });
 
-  $('#sendLink').addEventListener('click', async () => {
+  $('#signInBtn').addEventListener('click', async () => {
     const email = $('#s-email').value.trim();
+    const password = $('#s-password').value;
     const msg = $('#authMsg');
-    if (!email) { toast('Enter your email first.', true); return; }
-    const btn = $('#sendLink');
-    btn.disabled = true; btn.textContent = 'Sending…';
+    msg.hidden = true;
+    if (!email || !password) { toast('Enter your email and password.', true); return; }
+    const btn = $('#signInBtn');
+    btn.disabled = true; btn.textContent = 'Signing in…';
     try {
-      await Sync.signIn(email);
-      msg.textContent = `Check ${email} for a sign-in link, then reopen this page.`;
-      msg.hidden = false;
+      await Sync.signInWithPassword(email, password);
+      $('#s-password').value = '';
+      toast('Signed in ✓');
+      await refreshAuthUI();
+      await triggerSync(true);
+      refreshSyncStatus();
     } catch (err) {
-      toast(err.message || 'Could not send link', true);
+      msg.textContent = err.message || 'Could not sign in.';
+      msg.hidden = false;
     } finally {
-      btn.disabled = false; btn.textContent = 'Email me a sign-in link';
+      btn.disabled = false; btn.textContent = 'Sign in / Create account';
     }
   });
 

@@ -53,16 +53,37 @@ export async function getUser() {
   }
 }
 
-/** Send a passwordless magic-link / OTP email. */
-export async function signIn(email) {
+/**
+ * Sign in with email + password, creating the account on first use.
+ *
+ * Requires "Confirm email" to be OFF in Supabase so sign-up returns a session
+ * immediately — no verification email, which sidesteps email rate limits and
+ * mail-client link scanners entirely.
+ */
+export async function signInWithPassword(email, password) {
   const sb = await getClient();
   if (!sb) throw new Error('Add your Supabase URL and key first.');
-  const { error } = await sb.auth.signInWithOtp({
-    email,
-    options: { emailRedirectTo: location.href.split('#')[0] },
-  });
-  if (error) throw error;
-  return true;
+
+  // 1. Try to sign in to an existing account.
+  const signIn = await sb.auth.signInWithPassword({ email, password });
+  if (!signIn.error) return signIn.data.user;
+
+  // 2. No matching account → create one.
+  const signUp = await sb.auth.signUp({ email, password });
+  if (signUp.error) {
+    const msg = (signUp.error.message || '').toLowerCase();
+    if (msg.includes('already registered') || msg.includes('already exists')) {
+      throw new Error('That email already has an account — the password looks wrong.');
+    }
+    if (msg.includes('password')) {
+      throw new Error('Password too weak — use at least 6 characters.');
+    }
+    throw new Error(signUp.error.message || 'Could not create the account.');
+  }
+  if (signUp.data.session) return signUp.data.user;
+
+  // 3. Sign-up worked but no session → email confirmation is still on.
+  throw new Error('Account created, but Supabase still has "Confirm email" turned ON. Turn it off (Authentication → Sign In / Providers → Email) and sign in again.');
 }
 
 export async function signOut() {
