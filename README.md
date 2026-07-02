@@ -125,10 +125,11 @@ node scripts/gen-icons.js   # see commit history; uses Playwright's chromium
 
 ## Deploying
 
-It's a static site published to GitHub Pages by `.github/workflows/deploy-pages.yml` on
-every push to the app branch — no build, no dependencies, nothing to install. Live at
-**https://pricebook.sonvu.eu/** (custom domain; the workflow writes a `CNAME` file so the
-domain sticks across deploys).
+It's a static site — no build, no dependencies, nothing to install — so it deploys on any
+static host. It runs on **Vercel** at **https://pricebook.sonvu.eu/** (import the repo, set
+the production branch, no build step, add the domain in Vercel → it handles DNS + HTTPS).
+It's also auto-published to GitHub Pages by `.github/workflows/deploy-pages.yml` as a mirror
+at the project's `github.io` URL.
 
 ## Privacy
 

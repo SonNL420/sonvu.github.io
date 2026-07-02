@@ -33,8 +33,6 @@ jobs:
           mkdir _site
           cp -r index.html styles.css app.js data.js sync.js \
                 manifest.webmanifest service-worker.js README.md icons _site/
-          # Custom domain — keeps pricebook.sonvu.eu set on every deploy
-          echo "pricebook.sonvu.eu" > _site/CNAME
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
