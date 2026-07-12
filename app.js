@@ -5,6 +5,7 @@
 import * as DB from './data.js';
 import * as Sync from './sync.js';
 import { COMMON_FOODS } from './foods.js';
+import { COMMON_SHOPS } from './shops.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -68,17 +69,21 @@ function renderAddDefaults() {
   updateUnitPreview();
 }
 
-function refreshDatalists() {
-  // Your own past items rank first, then the common-foods starter list fills in
-  // the rest (de-duplicated case-insensitively).
-  const userItems = DB.getItemNames();
-  const seen = new Set(userItems.map((n) => n.toLowerCase()));
-  const merged = [...userItems];
-  for (const f of COMMON_FOODS) {
-    if (!seen.has(f.toLowerCase())) { seen.add(f.toLowerCase()); merged.push(f); }
+/** Your own entries first, then the starter list (de-duplicated case-insensitively). */
+function mergeSuggestions(userValues, commonValues) {
+  const seen = new Set(userValues.map((n) => n.toLowerCase()));
+  const merged = [...userValues];
+  for (const v of commonValues) {
+    if (!seen.has(v.toLowerCase())) { seen.add(v.toLowerCase()); merged.push(v); }
   }
-  $('#items-datalist').innerHTML = merged.map((n) => `<option value="${escapeAttr(n)}"></option>`).join('');
-  $('#shops-datalist').innerHTML = DB.getShops().map((n) => `<option value="${escapeAttr(n)}"></option>`).join('');
+  return merged;
+}
+
+function refreshDatalists() {
+  const items = mergeSuggestions(DB.getItemNames(), COMMON_FOODS);
+  const shops = mergeSuggestions(DB.getShops(), COMMON_SHOPS);
+  $('#items-datalist').innerHTML = items.map((n) => `<option value="${escapeAttr(n)}"></option>`).join('');
+  $('#shops-datalist').innerHTML = shops.map((n) => `<option value="${escapeAttr(n)}"></option>`).join('');
 }
 
 function updateUnitPreview() {
