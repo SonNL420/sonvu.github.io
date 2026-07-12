@@ -6,6 +6,7 @@ import * as DB from './data.js';
 import * as Sync from './sync.js';
 import { COMMON_FOODS } from './foods.js';
 import { COMMON_SHOPS } from './shops.js';
+import * as Charts from './charts.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -182,7 +183,37 @@ function renderDetail(itemKey) {
   $('#verdict').hidden = true;
 
   renderStats(detail);
+  renderCharts(detail);
   renderHistory(detail);
+}
+
+function renderCharts(detail) {
+  const el = $('#detailCharts');
+  const s = detail.stats;
+  if (!s) { el.innerHTML = ''; return; }
+
+  const baseRecs = detail.records.filter((r) => r.baseUnit === detail.primaryBase);
+  const perUnit = DB.perBaseLabel(detail.primaryBase);
+  let html = '';
+
+  const trend = Charts.priceTrendSVG(baseRecs, detail.primaryBase);
+  if (trend) {
+    html += `<div class="card chart-card">
+        <h2 class="card-title">Price trend</h2>
+        <p class="muted small">Unit price (${escapeHTML(perUnit)}) over time · cheapest point in green.</p>
+        ${trend}
+      </div>`;
+  }
+
+  if (s.perShop && s.perShop.length > 1) {
+    html += `<div class="card chart-card">
+        <h2 class="card-title">By shop</h2>
+        <p class="muted small">Latest price ${escapeHTML(perUnit)} per shop — cheapest first.</p>
+        <div class="bars">${Charts.shopBarsHTML(s.perShop, detail.primaryBase)}</div>
+      </div>`;
+  }
+
+  el.innerHTML = html;
 }
 
 function mostCommonUnit(records) {

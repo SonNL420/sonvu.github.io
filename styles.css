@@ -242,6 +242,26 @@ input, select, button, textarea { font-family: inherit; font-size: 16px; }
 .stat-value { font-weight: 800; font-size: 1.05rem; margin-top: 3px; }
 .stat-sub { font-size: .72rem; color: var(--ink-soft); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+/* ── Charts ──────────────────────────────────────────────────────────────── */
+.charts { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
+.chart-card { margin-bottom: 0; }
+.chart-svg { width: 100%; height: auto; display: block; margin-top: 10px; overflow: visible; }
+.chart-axis { stroke: var(--line); stroke-width: 1; }
+.chart-line { fill: none; stroke: var(--green); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.chart-dot { fill: var(--green); }
+.chart-dot-best { fill: var(--green-dark); stroke: var(--card); stroke-width: 1.5; }
+.chart-avg { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; opacity: .7; }
+.chart-ylabel, .chart-xlabel { fill: var(--muted); font-size: 9px; }
+.chart-avg-label { fill: var(--muted); font-size: 8px; }
+
+.bars { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.bar-row { display: flex; align-items: center; gap: 10px; }
+.bar-shop { flex: 0 0 84px; font-size: .82rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-track { flex: 1; background: var(--bg); border-radius: 6px; height: 18px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--muted); border-radius: 6px; min-width: 4px; }
+.bar-fill.bar-best { background: var(--green); }
+.bar-value { flex: 0 0 auto; font-size: .8rem; font-weight: 700; white-space: nowrap; }
+
 /* ── History ─────────────────────────────────────────────────────────────── */
 .history-list { display: flex; flex-direction: column; gap: 8px; }
 .history-row {

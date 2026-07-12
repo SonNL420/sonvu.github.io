@@ -7,7 +7,7 @@
  * never gets served a stale response.
  * ==========================================================================*/
 
-const CACHE = 'pricebook-v5';
+const CACHE = 'pricebook-v6';
 const SHELL = [
   './',
   'index.html',
@@ -17,6 +17,7 @@ const SHELL = [
   'sync.js',
   'foods.js',
   'shops.js',
+  'charts.js',
   'manifest.webmanifest',
   'icons/icon.svg',
   'icons/icon-192.png',
