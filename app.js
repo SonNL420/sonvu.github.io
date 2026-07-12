@@ -4,6 +4,7 @@
 
 import * as DB from './data.js';
 import * as Sync from './sync.js';
+import { COMMON_FOODS } from './foods.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -68,7 +69,15 @@ function renderAddDefaults() {
 }
 
 function refreshDatalists() {
-  $('#items-datalist').innerHTML = DB.getItemNames().map((n) => `<option value="${escapeAttr(n)}"></option>`).join('');
+  // Your own past items rank first, then the common-foods starter list fills in
+  // the rest (de-duplicated case-insensitively).
+  const userItems = DB.getItemNames();
+  const seen = new Set(userItems.map((n) => n.toLowerCase()));
+  const merged = [...userItems];
+  for (const f of COMMON_FOODS) {
+    if (!seen.has(f.toLowerCase())) { seen.add(f.toLowerCase()); merged.push(f); }
+  }
+  $('#items-datalist').innerHTML = merged.map((n) => `<option value="${escapeAttr(n)}"></option>`).join('');
   $('#shops-datalist').innerHTML = DB.getShops().map((n) => `<option value="${escapeAttr(n)}"></option>`).join('');
 }
 
@@ -283,15 +292,44 @@ async function refreshAuthUI() {
 }
 
 /* ── Sync status pill ────────────────────────────────────────────────────── */
+let lastSyncError = null;
+
 async function refreshSyncStatus() {
   const pill = $('#syncPill');
   const label = $('#syncLabel');
   pill.className = 'sync-pill';
   if (!Sync.isConfigured()) { label.textContent = 'Local'; return; }
   if (!navigator.onLine) { pill.classList.add('is-offline'); label.textContent = 'Offline'; return; }
+  // A real sync failure trumps everything else so it can't be silently hidden.
+  if (lastSyncError) { pill.classList.add('is-error'); label.textContent = 'Sync error'; return; }
   const user = await Sync.getUser();
-  if (user) { pill.classList.add('is-synced'); label.textContent = 'Synced'; }
-  else { label.textContent = 'Sign in'; }
+  if (!user) { label.textContent = 'Sign in'; return; }
+  pill.classList.add('is-synced'); label.textContent = 'Synced';
+}
+
+/** Turn a failed sync result into a plain-language message (or null if it's an
+ *  expected state like offline/signed-out that the badge already shows). */
+function syncErrorText(res) {
+  const detail = res.error && (res.error.message || res.error.msg || res.error.hint || '');
+  switch (res.reason) {
+    case 'signed-out':
+    case 'offline':
+    case 'not-configured':
+      return null;
+    case 'load-failed':
+      return 'Sync failed: couldn’t load the Supabase client (offline or blocked?).';
+    case 'push-failed':
+    case 'pull-failed':
+      if (/relation .*prices.* does not exist|could not find the table|schema cache/i.test(detail)) {
+        return 'Sync failed: the “prices” table is missing in Supabase — run the setup SQL from the README.';
+      }
+      if (/jwt|invalid.*key|api key/i.test(detail)) {
+        return 'Sync failed: Supabase key looks wrong — re-check the anon key in Settings.';
+      }
+      return `Sync failed (${res.reason})${detail ? ': ' + detail : ''}`;
+    default:
+      return `Sync failed (${res.reason || 'unknown'})`;
+  }
 }
 
 let syncing = false;
@@ -301,13 +339,25 @@ async function triggerSync(showResult = false) {
   try {
     const res = await Sync.sync();
     if (res.ok) {
+      lastSyncError = null;
       if (showResult) toast(`Synced · ${res.pulled} in, ${res.pushed} out`);
-    } else if (showResult && res.reason !== 'signed-out') {
-      toast(`Sync: ${res.reason}`, true);
+    } else {
+      const msg = syncErrorText(res);
+      if (msg) {
+        // Surface real failures even on automatic syncs — but don't repeat the
+        // same message on every retry (badge stays red regardless).
+        const isNew = msg !== lastSyncError;
+        lastSyncError = msg;
+        if (showResult || isNew) toast(msg, true);
+        console.error('Sync error:', res);
+      } else if (showResult && res.reason === 'signed-out') {
+        toast('Sign in to sync (Settings → Sync).', true);
+      }
     }
   } catch (err) {
     console.error(err);
-    if (showResult) toast('Sync failed', true);
+    lastSyncError = 'Sync failed unexpectedly — see the browser console.';
+    if (showResult) toast(lastSyncError, true);
   } finally {
     syncing = false;
     refreshSyncStatus();
