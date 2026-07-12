@@ -70,6 +70,13 @@ function renderAddDefaults() {
   updateUnitPreview();
 }
 
+/* Suggestions: keep the <datalist> tiny at all times. Rendering the full
+ * ~800-item list caused iOS Safari to hang, so we only ever put a small,
+ * filtered set of matches in the DOM (rebuilt as the user types). */
+const SUGGEST_LIMIT = 30;
+let itemBase = [];
+let shopBase = [];
+
 /** Your own entries first, then the starter list (de-duplicated case-insensitively). */
 function mergeSuggestions(userValues, commonValues) {
   const seen = new Set(userValues.map((n) => n.toLowerCase()));
@@ -80,11 +87,34 @@ function mergeSuggestions(userValues, commonValues) {
   return merged;
 }
 
+function rebuildSuggestionBase() {
+  itemBase = mergeSuggestions(DB.getItemNames(), COMMON_FOODS);
+  shopBase = mergeSuggestions(DB.getShops(), COMMON_SHOPS);
+}
+
+/** Put at most SUGGEST_LIMIT matches (prefix-matches first) into a datalist. */
+function fillDatalist(datalistEl, base, query) {
+  const q = String(query || '').trim().toLowerCase();
+  let matches;
+  if (!q) {
+    matches = base.slice(0, SUGGEST_LIMIT);
+  } else {
+    const starts = [], contains = [];
+    for (const v of base) {
+      const lv = v.toLowerCase();
+      if (lv.startsWith(q)) starts.push(v);
+      else if (lv.includes(q)) contains.push(v);
+      if (starts.length >= SUGGEST_LIMIT) break;
+    }
+    matches = starts.concat(contains).slice(0, SUGGEST_LIMIT);
+  }
+  datalistEl.innerHTML = matches.map((n) => `<option value="${escapeAttr(n)}"></option>`).join('');
+}
+
 function refreshDatalists() {
-  const items = mergeSuggestions(DB.getItemNames(), COMMON_FOODS);
-  const shops = mergeSuggestions(DB.getShops(), COMMON_SHOPS);
-  $('#items-datalist').innerHTML = items.map((n) => `<option value="${escapeAttr(n)}"></option>`).join('');
-  $('#shops-datalist').innerHTML = shops.map((n) => `<option value="${escapeAttr(n)}"></option>`).join('');
+  rebuildSuggestionBase();
+  fillDatalist($('#items-datalist'), itemBase, $('#f-item').value);
+  fillDatalist($('#shops-datalist'), shopBase, $('#f-shop').value);
 }
 
 function updateUnitPreview() {
@@ -123,6 +153,9 @@ function onAddSubmit(e) {
   form.notes.value = '';
   form.quantity.value = '1';
   $('#unitPreview').hidden = true;
+  // reset the item suggestions to the small top set before re-focusing so the
+  // datalist popup never has to render the whole list (iOS hang guard)
+  fillDatalist($('#items-datalist'), itemBase, '');
   form.item.focus();
 
   toast(`Saved ${item} at ${shop} ✓`);
@@ -435,6 +468,10 @@ function wire() {
     $(sel).addEventListener('input', updateUnitPreview);
     $(sel).addEventListener('change', updateUnitPreview);
   });
+
+  // live-filter the suggestion datalists (keeps them tiny → no iOS hang)
+  $('#f-item').addEventListener('input', () => fillDatalist($('#items-datalist'), itemBase, $('#f-item').value));
+  $('#f-shop').addEventListener('input', () => fillDatalist($('#shops-datalist'), shopBase, $('#f-shop').value));
 
   // items search
   $('#searchInput').addEventListener('input', renderItems);
