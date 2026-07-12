@@ -7,7 +7,7 @@
  * never gets served a stale response.
  * ==========================================================================*/
 
-const CACHE = 'pricebook-v4';
+const CACHE = 'pricebook-v5';
 const SHELL = [
   './',
   'index.html',
@@ -46,25 +46,24 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (url.origin !== location.origin) return; // fonts / esm.sh / supabase → network
 
-  // Navigations: network-first (fresh when online), fall back to cached shell.
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request).catch(() => caches.match('index.html')),
-    );
-    return;
-  }
-
-  // Same-origin assets: cache-first, then network (and populate the cache).
+  // Network-first for everything same-origin: always serve the freshest build
+  // when online, and only fall back to the cache when the network is
+  // unavailable. This prevents the app from getting stuck on a stale cached
+  // version after a deploy. The cache is refreshed on every successful fetch,
+  // so offline still gets the most recent files.
   event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) return cached;
-      return fetch(request).then((res) => {
+    fetch(request)
+      .then((res) => {
         if (res && res.ok) {
           const copy = res.clone();
           caches.open(CACHE).then((cache) => cache.put(request, copy));
         }
         return res;
-      });
-    }),
+      })
+      .catch(() =>
+        caches.match(request).then(
+          (cached) => cached || (request.mode === 'navigate' ? caches.match('index.html') : undefined),
+        ),
+      ),
   );
 });
