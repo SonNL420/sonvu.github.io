@@ -17,7 +17,7 @@
   <header class="app-header">
     <div class="app-header-inner">
       <div class="brand">
-        <span class="brand-mark">🏷️</span>
+        <img class="brand-logo" src="icons/icon.svg" alt="" width="30" height="30" />
         <span class="brand-name">PriceBook</span>
       </div>
       <button id="syncPill" class="sync-pill" type="button" title="Sync status">
@@ -204,13 +204,25 @@
   <!-- ── BOTTOM NAV ── -->
   <nav class="tabbar">
     <button class="tab" data-go="add" type="button">
-      <span class="tab-icon">＋</span><span class="tab-label">Add</span>
+      <span class="tab-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9" /><path d="M12 8v8M8 12h8" />
+        </svg>
+      </span><span class="tab-label">Add</span>
     </button>
     <button class="tab" data-go="items" type="button">
-      <span class="tab-icon">🧾</span><span class="tab-label">Items</span>
+      <span class="tab-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 6h11M9 12h11M9 18h11" /><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01" />
+        </svg>
+      </span><span class="tab-label">Items</span>
     </button>
     <button class="tab" data-go="settings" type="button">
-      <span class="tab-icon">⚙️</span><span class="tab-label">Settings</span>
+      <span class="tab-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 21v-6M4 11V3M12 21v-9M12 8V3M20 21v-4M20 13V3" /><path d="M2 15h4M10 8h4M18 17h4" />
+        </svg>
+      </span><span class="tab-label">Settings</span>
     </button>
   </nav>
 
