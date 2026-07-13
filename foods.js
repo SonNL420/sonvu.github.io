@@ -1,5 +1,6 @@
 /* ============================================================================
- * foods.js — a broad list of common grocery items for NL / BE / FR / DE shoppers
+ * foods.js — a broad list of common grocery items for NL / BE / FR / DE shoppers,
+ *            including Asian / oriental store staples (e.g. Amazing Oriental, toko)
  *
  * These populate the "Item" field's suggestions so you can pick from a list
  * instead of typing every time. Entries are short, pickable names (English
@@ -181,6 +182,49 @@ export const FOOD_CATEGORIES = {
     'Red curry paste', 'Green curry paste', 'Rice paper', 'Spring roll wrappers', 'Nori',
     'Sushi rice', 'Wasabi', 'Miso paste', 'Kimchi', 'Poppadoms', 'Tahini', 'Ramen', 'Udon noodles',
     'Gyoza', 'Dumplings',
+  ],
+  'Asian sauces & pastes': [
+    'Light soy sauce', 'Dark soy sauce', 'Kecap manis', 'Ketjap', 'Fish sauce', 'Oyster sauce',
+    'Hoisin sauce', 'Teriyaki sauce', 'Ponzu', 'Mirin', 'Rice vinegar', 'Rice wine',
+    'Shaoxing wine', 'Sesame oil', 'Chili oil', 'Sriracha', 'Sambal oelek', 'Sambal badjak',
+    'Gochujang', 'Gochugaru', 'Doubanjiang', 'Black bean sauce', 'Sweet chili sauce', 'Plum sauce',
+    'Char siu sauce', 'Satay sauce', 'Peanut sauce', 'Yellow curry paste', 'Massaman curry paste',
+    'Panang curry paste', 'Tom yum paste', 'Laksa paste', 'Tamarind paste', 'White miso',
+    'Red miso', 'Dashi', 'Furikake', 'Pickled ginger', 'Shrimp paste', 'Trassi',
+    'Nasi goreng paste', 'Bami goreng paste',
+  ],
+  'Asian noodles & wrappers': [
+    'Rice noodles', 'Rice vermicelli', 'Egg noodles', 'Ramen noodles', 'Soba noodles',
+    'Glass noodles', 'Mung bean noodles', 'Instant noodles', 'Indomie', 'Mi goreng',
+    'Wonton wrappers', 'Gyoza wrappers', 'Dumpling wrappers',
+  ],
+  'Asian rice & flours': [
+    'Jasmine rice', 'Glutinous rice', 'Sticky rice', 'Black rice', 'Rice flour',
+    'Glutinous rice flour', 'Tapioca starch', 'Potato starch', 'Chapati flour',
+  ],
+  'Asian fresh & tofu': [
+    'Firm tofu', 'Silken tofu', 'Fried tofu', 'Tau pok', 'Fish balls', 'Fish cake', 'Crab sticks',
+    'Bok choy', 'Choy sum', 'Kai lan', 'Napa cabbage', 'Morning glory', 'Kangkong', 'Daikon',
+    'Lotus root', 'Bamboo shoots', 'Water chestnuts', 'Enoki mushrooms', 'Shiitake mushrooms',
+    'Oyster mushrooms', 'King oyster mushrooms', 'Wood ear mushrooms', 'Bitter melon',
+    'Winter melon', 'Taro', 'Galangal', 'Lemongrass', 'Kaffir lime leaves', 'Thai basil',
+    "Bird's eye chili", 'Curry leaves', 'Pandan leaves', 'Paneer', 'Ghee',
+  ],
+  'Asian canned & dry': [
+    'Coconut cream', 'Coconut water', 'Straw mushrooms', 'Baby corn', 'Lychee', 'Longan',
+    'Rambutan', 'Jackfruit', 'Palm sugar', 'Rock sugar', 'Red bean paste', 'Lotus paste',
+    'Dried shiitake', 'Dried shrimp', 'Dried anchovies', 'Kombu', 'Wakame', 'Seaweed', 'Curry roux',
+    'Atjar', 'Serundeng',
+  ],
+  'Asian snacks & drinks': [
+    'Prawn crackers', 'Kroepoek', 'Seaweed snacks', 'Pocky', 'Mochi', 'Rice crackers', 'Senbei',
+    'Wasabi peas', 'Dried mango', 'Bubble tea', 'Tapioca pearls', 'Boba', 'Matcha', 'Green tea',
+    'Jasmine tea', 'Oolong tea', 'Soy milk', 'Aloe vera drink', 'Ramune', 'Calpico', 'Yakult',
+    'Milk tea', 'Mango pudding',
+  ],
+  'Asian spices': [
+    'Five spice', 'Star anise', 'Sichuan pepper', 'Szechuan pepper', 'Fenugreek', 'Mustard seeds',
+    'Garam masala', 'Tandoori masala', 'Curry powder', 'Turmeric', 'Cardamom',
   ],
   'Baby & toddler': [
     'Baby formula', 'Baby milk', 'Baby food', 'Fruit pouch', 'Baby porridge', 'Baby rusks',

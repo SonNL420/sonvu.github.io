@@ -7,7 +7,7 @@
  * never gets served a stale response.
  * ==========================================================================*/
 
-const CACHE = 'pricebook-v10';
+const CACHE = 'pricebook-v11';
 const SHELL = [
   './',
   'index.html',
