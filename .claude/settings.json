@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx -y vercel@latest deploy:*)",
+      "Bash(npx -y vercel@latest promote:*)",
+      "Bash(curl *https://api.vercel.com/v*/deployments*)",
+      "Bash(curl *https://api.vercel.com/v*/projects/prj_chidPxzOKHnsYM4CpCBcMGNKHWXS/promote/*)"
+    ],
+    "ask": [
+      "Bash(curl *-X DELETE*)",
+      "Bash(curl *-XDELETE*)",
+      "Bash(curl *--request DELETE*)",
+      "Bash(curl *api.vercel.com*/env*)",
+      "Bash(npx *vercel* env *)",
+      "Bash(curl *api.supabase.com*)",
+      "Bash(supabase *)",
+      "Bash(curl *api.stripe.com*)",
+      "Bash(stripe *)"
+    ]
+  }
+}
